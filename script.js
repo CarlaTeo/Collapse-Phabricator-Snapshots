@@ -23,12 +23,15 @@ async function collapseSnapshots() {
       const optionsButton = arrLinks.filter(link=> link.innerHTML.search("View Options")>-1);
       optionsButton[0].dispatchEvent(mouseEvent);
 
-      const menu = document.getElementsByClassName("phuix-dropdown-menu");
-      const menuLinks = menu[0].getElementsByTagName("a");
-      const menuLinksArray = [].slice.call(menuLinks);
+      let menuLinksArray = getOptionsFromMenu();
 
       const isLoading = menuLinksArray.filter(link=> link.innerHTML.search("Can't Toggle Unloaded File")>-1);
-      if(isLoading.length) await sleep(10000); //if your internet connection is too slow you might want to increase this value
+      if(isLoading.length){
+          optionsButton[0].dispatchEvent(mouseEvent); // close menu
+          await sleep(5000); //if your internet connection is too slow you might want to increase this value
+          optionsButton[0].dispatchEvent(mouseEvent); // reopen menu
+          menuLinksArray = getOptionsFromMenu();
+      }
 
       const collapseOption= menuLinksArray.filter(link=> link.innerHTML.search("Collapse File")>-1);
       if(collapseOption.length){
@@ -36,6 +39,12 @@ async function collapseSnapshots() {
       }
     }
   }
+}
+
+function getOptionsFromMenu(){
+    const menu = document.getElementsByClassName("phuix-dropdown-menu");
+    const menuLinks = menu[0].getElementsByTagName("a");
+    return [].slice.call(menuLinks);
 }
 
 // Waiting for the document to load, even though window.onload will fire before all the file diffs have been loaded
