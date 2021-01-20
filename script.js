@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Phabricator: collapse snapshots
 // @include     https://phabricator.*
-// @version     1
+// @version     2
 // @grant       none
 // ==/UserScript==
 
@@ -10,6 +10,7 @@ function sleep(ms) {
 }
 
 async function collapseSnapshots() {
+  await sleep(5000); //if your internet connection is too slow you might want to increase this value
   let fileSections = document.getElementsByClassName("differential-changeset");
   let mouseEvent = document.createEvent("MouseEvents");
   mouseEvent.initEvent("click", true, true);
@@ -33,7 +34,7 @@ async function collapseSnapshots() {
           menuLinksArray = getOptionsFromMenu();
       }
 
-      const collapseOption= menuLinksArray.filter(link=> link.innerHTML.search("Collapse File")>-1);
+      const collapseOption= menuLinksArray.filter(link=> link.innerHTML.search("Hide Changeset")>-1);
       if(collapseOption.length){
       	collapseOption[0].dispatchEvent(mouseEvent);
       }
